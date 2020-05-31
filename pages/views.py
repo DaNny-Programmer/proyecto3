@@ -24,7 +24,7 @@ class PageCreate(CreateView):
 
 class PageUpdate(UpdateView):
     model = Page
-    fields = ['title', 'content', 'order']
+    form_class = PageForm
     template_name_suffix = '_update_form'
     
     def get_success_url(self):
