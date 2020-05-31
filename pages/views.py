@@ -2,6 +2,7 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
+from django.shortcuts import redirect
 from .models import Page
 from .forms import PageForm
 
@@ -22,7 +23,9 @@ class PageCreate(CreateView):
     success_url = reverse_lazy('pages:pages')
 
     def dispatch(self, request, *args, **kwargs):
-        print(request.user)
+        if not request.user.is_staff:
+            return redirect(reverse_lazy('admin:login'))
+
         return super(PageCreate, self).dispatch(request, *args, **kwargs)
 
 
