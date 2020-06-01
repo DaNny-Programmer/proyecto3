@@ -11,6 +11,8 @@ from .forms import PageForm
 class StaffRequiredMixin(object):
     @method_decorator(staff_member_required)
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            return redirect(reverse_lazy('admin:login'))
         return super(StaffRequiredMixin, self).dispatch(request, *args, **kwargs)
 
 # Create your views here.
@@ -23,7 +25,7 @@ class PageDetailView(DetailView):
     model = Page
 
 @method_decorator(staff_member_required, name='dispatch')
-class PageCreate(StaffRequiredMixin, CreateView):
+class PageCreate(CreateView):
     model = Page
     form_class = PageForm
     success_url = reverse_lazy('pages:pages')
