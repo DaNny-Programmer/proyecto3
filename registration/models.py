@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 # Create your models here.
 
@@ -11,3 +13,9 @@ class Profile(models.Model):
 
     class Meta:
         ordering = ['user__username']
+
+@receiver(post_save, sender=User)
+def ensure_profile_exists(sender, instance, **kwargs):
+    if kwargs.get('created', False):
+        Profile.objects.get_or_create(user=instance)
+        print("Se acaba de crear un usuario y su perfil enlazado")
